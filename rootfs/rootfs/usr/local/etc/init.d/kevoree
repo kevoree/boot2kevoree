@@ -1,0 +1,56 @@
+#!/bin/sh
+
+export KEVOREE_VERSION=RELEASE
+export NODE_NAME=$(hostname)
+export PING_PORT=9999
+export PING_TIMEOUT=3000
+export BOOT_MODEL="/kevoree/boot.kevs"
+
+# kevoree daemon start script
+[ $(id -u) = 0 ] || { echo "must be root" ; exit 1; }
+
+#import settings from profile (e.g. HTTP_PROXY, HTTPS_PROXY)
+test -f "/var/lib/boot2docker/profile" && . "/var/lib/boot2docker/profile"
+
+javaArgs="-Dnetworkaddress.cache.ttl=0 -Dnode.name=$NODE_NAME -Dping.port=$PING_PORT -Dping.timeout=$PING_TIMEOUT -Dlog.out=/kevoree/log.out -jar /kevoree/kevboot.jar $KEVOREE_VERSION $BOOT_MODEL"
+javaCommandLine="/kevoree/jre/bin/java $javaArgs"
+
+start() {
+    nohup $javaCommandLine > /kevoree/process.log 2>&1 < /dev/null &
+	PID=$!
+	echo $PID > /var/run/kevoree.pid
+}
+
+stop() {
+    kill $(cat /var/run/kevoree.pid)
+}
+
+restart() {
+    if check; then
+        stop && sleep 1 && start
+    else
+        start
+    fi
+}
+
+check() {
+    [ -f /var/run/kevoree.pid ] && ps $(cat /var/run/kevoree.pid) > /dev/null 2>&1
+}
+
+status() {
+    if check; then
+        echo "Kevoree daemon is running"
+        exit 0
+    else
+        echo "Kevoree daemon is not running"
+        exit 1
+    fi
+}
+
+case $1 in
+    start) start;;
+    stop) stop;;
+    restart) restart;;
+    status) status;;
+    *) echo "Usage $0 {start|stop|restart|status}"; exit 1
+esac

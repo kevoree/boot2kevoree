@@ -1,0 +1,8 @@
+repo "http://repo1.maven.org/maven2/"
+
+include mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:latest
+include mvn:org.kevoree.library.cloud:org.kevoree.library.cloud.web:latest
+
+add boot2kevoree : JavaNode
+add boot2kevoree.web : WebFrontend
+
