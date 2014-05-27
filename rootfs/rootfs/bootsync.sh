@@ -58,16 +58,20 @@ if [ -e /var/lib/boot2docker/bootlocal.sh ]; then
     /var/lib/boot2docker/bootlocal.sh &
 fi
 
-# Wait for internet to come up (DHCP)
-MAXWAIT=30
-WAITTIME=0
-STEPTIME=2
-HOSTNAME=”www.google.com”
+IT_UP=`/usr/local/testip.sh`
 
-while ! $(curl “${HOSTNAME}” > /dev/null 2>&1 || [ "${WAITTIME}" -le "${MAXWAIT}" ]) ; do
-WAITTIME=$((WAITTIME+STEPTIME))
-sleep “${STEPTIME}”
-echo -n .
+i=0
+max=20
+while [ $i -lt $max ]
+do
+    echo "try: $i";
+	if [ "$IT_UP" == "ok" ];
+    then
+		break;
+	fi
+	sleep 1
+	IT_UP=`/usr/local/testip.sh`
+    true $(( i++ ))
 done
 
 /etc/rc.d/kevoree
