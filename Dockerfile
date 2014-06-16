@@ -13,7 +13,7 @@ ENV			JAVA_HOME $ROOTFS/kevoree/jre
 ENV			PATH $PATH:$JAVA_HOME/bin
 
 # add kevoree watchdog
-ADD 		org.kevoree.watchdog-0.23.jar $ROOTFS/kevoree/kevboot.jar
+ADD 		org.kevoree.watchdog-0.24.jar $ROOTFS/kevoree/kevboot.jar
 ADD 		boot.kevs $ROOTFS/kevoree/boot.kevs
 
 ADD rootfs/rootfs $ROOTFS

@@ -1,8 +1,17 @@
 repo "http://repo1.maven.org/maven2/"
 
-include mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:latest
-include mvn:org.kevoree.library.cloud:org.kevoree.library.cloud.web:latest
+include mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:release
+include mvn:org.kevoree.library.java:org.kevoree.library.java.ws:release
+include mvn:org.kevoree.library.java:org.kevoree.library.java.editor:release
+include mvn:org.kevoree.library.cloud:org.kevoree.library.cloud.web:release
+include mvn:org.kevoree.library.cloud:org.kevoree.library.cloud.docker:release
 
-add boot2kevoree : JavaNode
+add boot2kevoree : DockerNode
+//add boot2kevoree : JavaNode
+add sync : WSGroup
+attach boot2kevoree sync
+
 add boot2kevoree.web : WebFrontend
+add boot2kevoree.editor : WebEditor
+set boot2kevoree.editor.port = "3042"
 
